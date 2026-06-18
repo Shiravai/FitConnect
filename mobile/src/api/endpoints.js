@@ -1,0 +1,70 @@
+// src/api/endpoints.js — typed-ish helpers grouped by model (same API as the server).
+import { api } from "./client";
+
+export const authApi = {
+  register: (data) => api.post("/auth/register", data),
+  login: (data) => api.post("/auth/login", data),
+  me: () => api.get("/auth/me"),
+};
+
+export const userApi = {
+  getOne: (id) => api.get(`/users/${id}`),
+  updateMe: (data) => api.put("/users/me", data),
+  toggleFriend: (id) => api.post(`/users/${id}/friend`),
+};
+
+const qs = (obj) =>
+  Object.entries(obj)
+    .filter(([, v]) => v !== "" && v != null)
+    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+    .join("&");
+
+export const groupApi = {
+  list: () => api.get("/groups"),
+  search: (q) => api.get(`/groups/search?${qs(q)}`),
+  getOne: (id) => api.get(`/groups/${id}`),
+  create: (data) => api.post("/groups", data),
+  update: (id, data) => api.put(`/groups/${id}`, data),
+  remove: (id) => api.del(`/groups/${id}`),
+  join: (id) => api.post(`/groups/${id}/join`),
+  leave: (id) => api.post(`/groups/${id}/leave`),
+  approve: (gid, uid) => api.post(`/groups/${gid}/approve/${uid}`),
+  reject: (gid, uid) => api.post(`/groups/${gid}/reject/${uid}`),
+  removeMember: (gid, uid) => api.del(`/groups/${gid}/members/${uid}`),
+};
+
+export const postApi = {
+  feed: () => api.get("/posts/feed"),
+  search: (q) => api.get(`/posts/search?${qs(q)}`),
+  byUser: (uid) => api.get(`/posts/user/${uid}`),
+  byGroup: (gid) => api.get(`/posts/group/${gid}`),
+  create: (data) => api.post("/posts", data),
+  update: (id, data) => api.put(`/posts/${id}`, data),
+  remove: (id) => api.del(`/posts/${id}`),
+  like: (id) => api.post(`/posts/${id}/like`),
+  comment: (id, text) => api.post(`/posts/${id}/comment`, { text }),
+};
+
+export const messageApi = {
+  contacts: () => api.get("/messages"),
+  unread: () => api.get("/messages/unread"),
+  history: (otherId) => api.get(`/messages/${otherId}`),
+  markRead: (otherId) => api.post(`/messages/${otherId}/read`),
+};
+
+export const statsApi = { overview: () => api.get("/stats/overview") };
+
+export const adminApi = {
+  overview: () => api.get("/admin/overview"),
+  users: () => api.get("/admin/users"),
+  setRole: (id, role) => api.put(`/admin/users/${id}/role`, { role }),
+  deleteUser: (id) => api.del(`/admin/users/${id}`),
+  groups: () => api.get("/admin/groups"),
+  deleteGroup: (id) => api.del(`/admin/groups/${id}`),
+};
+
+export const SPORT_TYPES = [
+  "Running", "CrossFit", "Yoga", "Cycling", "Swimming", "Gym", "Football", "Basketball",
+  "Tennis", "Boxing", "Pilates", "Hiking", "Dancing", "Climbing", "Volleyball",
+  "Martial Arts", "Rowing", "Skating", "Surfing", "Golf", "Skiing", "Triathlon",
+];

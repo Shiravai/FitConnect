@@ -24,7 +24,8 @@ const app = express();
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
 // ---- Global middleware ----
-app.use(cors({ origin: CLIENT_URL, credentials: true }));
+// Allow any origin so both the web client and the Expo / React Native mobile app can connect.
+app.use(cors());
 app.use(express.json({ limit: "15mb" })); // larger limit allows base64 canvas drawings
 app.use(express.urlencoded({ extended: true }));
 
@@ -51,7 +52,7 @@ app.use(errorHandler);
 
 // ---- HTTP + Socket.io server ----
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: CLIENT_URL, credentials: true } });
+const io = new Server(server, { cors: { origin: "*" } });
 registerChat(io); // wire up real-time chat (requirement #28)
 
 // Safety nets so an unexpected error never kills the process

@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "FitConnect",
+    "slug": "fitconnect",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#0a0a0b",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.fitconnect.app"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "FitConnect needs access to your photos to share workout posts."
+        }
+      ],
+      "expo-asset"
+    ]
+  }
+}
