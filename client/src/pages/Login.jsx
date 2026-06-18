@@ -49,6 +49,8 @@ export default function Login() {
       {/* Background layers */}
       <div className="cine-bg" />
       <video className="cine-video" autoPlay loop muted playsInline poster="/login-bg.jpg">
+        {/* Live snowboarder footage; falls back to a local file, then the CSS scene. */}
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_063509_7d167302-4fd4-480b-8260-18ab572333d4.mp4" type="video/mp4" />
         <source src="/login-bg.mp4" type="video/mp4" />
       </video>
       <div className="cine-overlay" />
