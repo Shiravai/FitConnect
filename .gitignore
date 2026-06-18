@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Secrets — NEVER commit these (project requirement #7)
+.env
+server/.env
+
+# Uploaded media
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Build output
+client/dist/
+
+# Logs / OS
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
