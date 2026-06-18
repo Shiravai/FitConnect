@@ -33,6 +33,11 @@ export default function Navbar() {
           Chat{totalUnread > 0 && <span className="badge">{totalUnread}</span>}
         </button>
         {link("/create", "+ New Post")}
+        {user.role === "admin" && (
+          <Link to="/admin" className={pathname === "/admin" ? "nav-admin-link active" : "nav-admin-link"}>
+            🛡️ Admin
+          </Link>
+        )}
       </div>
       <div className="nav-user">
         <Link to={`/profile/${user._id}`} className="nav-link">

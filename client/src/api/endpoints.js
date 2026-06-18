@@ -54,6 +54,15 @@ export const statsApi = {
   overview: () => api.get("/stats/overview"),
 };
 
+export const adminApi = {
+  overview: () => api.get("/admin/overview"),
+  users: () => api.get("/admin/users"),
+  setRole: (id, role) => api.put(`/admin/users/${id}/role`, { role }),
+  deleteUser: (id) => api.del(`/admin/users/${id}`),
+  groups: () => api.get("/admin/groups"),
+  deleteGroup: (id) => api.del(`/admin/groups/${id}`),
+};
+
 // Keep this list in sync with server/models/Group.js SPORT_TYPES.
 export const SPORT_TYPES = [
   "Running", "CrossFit", "Yoga", "Cycling", "Swimming", "Gym", "Football", "Basketball",

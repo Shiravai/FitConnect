@@ -42,10 +42,7 @@ export default function Login() {
           <button className="btn btn-block" disabled={busy}>{busy ? "Logging in…" : "Log in"}</button>
         </form>
         <p className="muted small">No account? <Link to="/register">Create one</Link></p>
-        <div className="demo-hint">
-          <strong>Demo logins</strong> (password <code>123456</code>): admin · maya · daniel · noa
         </div>
-      </div>
     </div>
   );
 }

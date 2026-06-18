@@ -15,6 +15,7 @@ import CreatePost from "./pages/CreatePost";
 import SearchPosts from "./pages/SearchPosts";
 import SearchGroups from "./pages/SearchGroups";
 import Stats from "./pages/Stats";
+import Admin from "./pages/Admin";
 
 export default function App() {
   const { user, loading } = useAuth();
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/search/posts" element={<ProtectedRoute><SearchPosts /></ProtectedRoute>} />
           <Route path="/search/groups" element={<ProtectedRoute><SearchGroups /></ProtectedRoute>} />
           <Route path="/stats" element={<ProtectedRoute><Stats /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

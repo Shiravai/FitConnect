@@ -18,6 +18,7 @@ const groupRoutes = require("./routes/groupRoutes");
 const postRoutes = require("./routes/postRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const statsRoutes = require("./routes/statsRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
@@ -40,6 +41,7 @@ app.use("/api/groups", groupRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/stats", statsRoutes);
+app.use("/api/admin", adminRoutes);
 
 // 404 for unknown API routes
 app.use("/api", (req, res) => res.status(404).json({ message: "API route not found" }));
