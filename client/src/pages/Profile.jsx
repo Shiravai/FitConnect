@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { userApi, postApi } from "../api/endpoints";
+import { uploadFile } from "../api/http";
 import { useAuth } from "../context/AuthContext";
 import PostCard from "../components/PostCard";
 
@@ -53,6 +54,19 @@ export default function Profile() {
     load();
   };
 
+  // Upload a profile photo and set it as the avatar.
+  const onAvatarFile = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setError("");
+    try {
+      const { url } = await uploadFile(file);
+      setForm((f) => ({ ...f, avatarUrl: url }));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   const isFriend = user.friends?.some((f) => String(f) === String(id));
   const onDeleted = (pid) => setPosts((prev) => prev.filter((p) => p._id !== pid));
 
@@ -88,7 +102,18 @@ export default function Profile() {
             <label>Name<input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></label>
             <label>Bio<textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} /></label>
             <label>Favorite sport<input value={form.favoriteSport} onChange={(e) => setForm({ ...form, favoriteSport: e.target.value })} /></label>
-            <label>Avatar URL<input value={form.avatarUrl} onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })} placeholder="https://…" /></label>
+
+            <div className="avatar-edit">
+              {form.avatarUrl ? <img className="avatar-lg" src={form.avatarUrl} alt="" /> : <span className="avatar-lg avatar-fallback">👤</span>}
+              <div>
+                <label className="btn btn-small btn-ghost file-btn">
+                  📷 Upload profile photo
+                  <input type="file" accept="image/*" onChange={onAvatarFile} hidden />
+                </label>
+                <input value={form.avatarUrl} onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })} placeholder="…or paste an image URL" />
+              </div>
+            </div>
+
             <button className="btn btn-small" onClick={saveProfile}>Save</button>
           </div>
         )}

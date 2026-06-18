@@ -54,6 +54,9 @@ export const statsApi = {
   overview: () => api.get("/stats/overview"),
 };
 
+// Keep this list in sync with server/models/Group.js SPORT_TYPES.
 export const SPORT_TYPES = [
   "Running", "CrossFit", "Yoga", "Cycling", "Swimming", "Gym", "Football", "Basketball",
+  "Tennis", "Boxing", "Pilates", "Hiking", "Dancing", "Climbing", "Volleyball",
+  "Martial Arts", "Rowing", "Skating", "Surfing", "Golf", "Skiing", "Triathlon",
 ];

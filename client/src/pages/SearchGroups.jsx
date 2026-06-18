@@ -1,7 +1,7 @@
 // src/pages/SearchGroups.jsx — advanced group search with 4 parameters (requirement #20).
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { groupApi, SPORT_TYPES } from "../api/endpoints";
+import GroupCard from "../components/GroupCard";
 
 export default function SearchGroups() {
   const [q, setQ] = useState({ sportType: "", name: "", privacy: "", minMembers: "" });
@@ -48,14 +48,7 @@ export default function SearchGroups() {
       {error && <p className="error">{error}</p>}
       {results && <p className="muted">{results.length} result(s)</p>}
       <div className="group-grid">
-        {results && results.map((g) => (
-          <Link to={`/groups/${g._id}`} key={g._id} className="card group-card">
-            <div className="group-cover" data-sport={g.sportType}>{g.sportType}</div>
-            <h3>{g.name}</h3>
-            <p className="muted small">{g.privacy === "private" ? "🔒 Private" : "🌍 Public"} · {g.members?.length || 0} members</p>
-            <p className="muted">{g.description}</p>
-          </Link>
-        ))}
+        {results && results.map((g) => <GroupCard key={g._id} group={g} />)}
       </div>
     </div>
   );

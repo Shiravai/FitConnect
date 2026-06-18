@@ -2,7 +2,11 @@
 const mongoose = require("mongoose");
 
 // Shared list of sport types, reused for validation and for UI dropdowns.
-const SPORT_TYPES = ["Running", "CrossFit", "Yoga", "Cycling", "Swimming", "Gym", "Football", "Basketball"];
+const SPORT_TYPES = [
+  "Running", "CrossFit", "Yoga", "Cycling", "Swimming", "Gym", "Football", "Basketball",
+  "Tennis", "Boxing", "Pilates", "Hiking", "Dancing", "Climbing", "Volleyball",
+  "Martial Arts", "Rowing", "Skating", "Surfing", "Golf", "Skiing", "Triathlon",
+];
 
 const groupSchema = new mongoose.Schema(
   {

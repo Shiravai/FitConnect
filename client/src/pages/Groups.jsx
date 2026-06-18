@@ -1,8 +1,8 @@
 // src/pages/Groups.jsx — list all groups + create a new group.
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { groupApi, SPORT_TYPES } from "../api/endpoints";
 import { useAuth } from "../context/AuthContext";
+import GroupCard from "../components/GroupCard";
 
 export default function Groups() {
   const { user, setUser } = useAuth();
@@ -62,14 +62,7 @@ export default function Groups() {
       )}
 
       <div className="group-grid">
-        {groups.map((g) => (
-          <Link to={`/groups/${g._id}`} key={g._id} className="card group-card">
-            <div className="group-cover" data-sport={g.sportType}>{g.sportType}</div>
-            <h3>{g.name}</h3>
-            <p className="muted small">{g.privacy === "private" ? "🔒 Private" : "🌍 Public"} · {g.members?.length || 0} members</p>
-            <p className="muted">{g.description}</p>
-          </Link>
-        ))}
+        {groups.map((g) => <GroupCard key={g._id} group={g} />)}
       </div>
     </div>
   );

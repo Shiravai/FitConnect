@@ -6,6 +6,7 @@ import { postApi, groupApi, SPORT_TYPES } from "../api/endpoints";
 import { uploadFile } from "../api/http";
 import { useAuth } from "../context/AuthContext";
 import CanvasDraw from "../components/CanvasDraw";
+import ImageTextEditor from "../components/ImageTextEditor";
 
 export default function CreatePost() {
   const { user } = useAuth();
@@ -16,6 +17,7 @@ export default function CreatePost() {
   const [mediaType, setMediaType] = useState("none");
   const [mediaUrl, setMediaUrl] = useState("");
   const [showCanvas, setShowCanvas] = useState(false);
+  const [showImageEditor, setShowImageEditor] = useState(false);
   const [workout, setWorkout] = useState({ sportType: user.favoriteSport || "", durationMin: "", distanceKm: "", calories: "" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -49,6 +51,18 @@ export default function CreatePost() {
       setMediaUrl(url);
       setMediaType("drawing");
       setShowCanvas(false);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Receive the captioned image from the text editor and upload it (replaces the photo).
+  const onCaptionExport = async (file) => {
+    try {
+      const { url } = await uploadFile(file);
+      setMediaUrl(url);
+      setMediaType("image");
+      setShowImageEditor(false);
     } catch (err) {
       setError(err.message);
     }
@@ -109,17 +123,32 @@ export default function CreatePost() {
 
         {showCanvas && <CanvasDraw onExport={onDrawingExport} />}
 
-        {mediaUrl && (
-          <div className="preview">
-            {mediaType === "video" ? (
-              <video src={mediaUrl} controls width="100%" />
-            ) : (
-              <img src={mediaUrl} alt="preview" />
-            )}
-            <button type="button" className="btn btn-small btn-ghost" onClick={() => { setMediaUrl(""); setMediaType("none"); }}>
-              Remove media
-            </button>
-          </div>
+        {showImageEditor && mediaUrl ? (
+          <ImageTextEditor
+            imageUrl={mediaUrl}
+            onExport={onCaptionExport}
+            onCancel={() => setShowImageEditor(false)}
+          />
+        ) : (
+          mediaUrl && (
+            <div className="preview">
+              {mediaType === "video" ? (
+                <video src={mediaUrl} controls width="100%" />
+              ) : (
+                <img src={mediaUrl} alt="preview" />
+              )}
+              <div className="media-row">
+                {(mediaType === "image" || mediaType === "drawing") && (
+                  <button type="button" className="btn btn-small btn-ghost" onClick={() => setShowImageEditor(true)}>
+                    ✏️ Write on photo
+                  </button>
+                )}
+                <button type="button" className="btn btn-small btn-ghost" onClick={() => { setMediaUrl(""); setMediaType("none"); }}>
+                  Remove media
+                </button>
+              </div>
+            </div>
+          )
         )}
 
         <fieldset className="workout-fields">
