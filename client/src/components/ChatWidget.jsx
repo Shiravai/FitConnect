@@ -27,10 +27,14 @@ export default function ChatWidget() {
 
   return (
     <div className="chat-widget">
-      {/* Launcher button with unread badge */}
-      <button className="chat-launcher" onClick={toggleWidget} title="Chat">
+      {/* Launcher button with a pulsing red unread badge */}
+      <button
+        className={totalUnread > 0 ? "chat-launcher has-unread" : "chat-launcher"}
+        onClick={toggleWidget}
+        title={totalUnread > 0 ? `${totalUnread} new message(s)` : "Chat"}
+      >
         💬
-        {totalUnread > 0 && <span className="badge">{totalUnread}</span>}
+        {totalUnread > 0 && <span className="badge badge-pulse">{totalUnread}</span>}
       </button>
 
       {widgetOpen && (

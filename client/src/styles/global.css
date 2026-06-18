@@ -225,6 +225,20 @@ textarea { min-height: 80px; resize: vertical; }
 .chat-launcher:hover { transform: scale(1.08); }
 .chat-launcher .badge { position: absolute; top: -2px; right: -2px; }
 
+/* Draw attention to the launcher while messages are waiting. */
+.chat-launcher.has-unread { animation: launcherWiggle 1.6s ease-in-out infinite; }
+@keyframes launcherWiggle {
+  0%, 92%, 100% { transform: rotate(0deg); }
+  94% { transform: rotate(-12deg); }
+  96% { transform: rotate(12deg); }
+  98% { transform: rotate(-8deg); }
+}
+.badge-pulse { animation: badgePulse 1.4s ease-in-out infinite; }
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); }
+  70% { box-shadow: 0 0 0 8px rgba(229, 57, 53, 0); }
+}
+
 .chat-panel {
   position: absolute; right: 0; bottom: 70px;
   width: 320px; height: 440px; max-height: 70vh;

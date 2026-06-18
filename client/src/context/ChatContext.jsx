@@ -18,10 +18,12 @@ export function ChatProvider({ children }) {
 
   // Refs let the socket handler read the latest values without re-subscribing.
   const openUserRef = useRef(null);
+  const widgetOpenRef = useRef(false);
   const contactsRef = useRef([]);
   const socketRef = useRef(null);
 
   useEffect(() => { openUserRef.current = openUser; }, [openUser]);
+  useEffect(() => { widgetOpenRef.current = widgetOpen; }, [widgetOpen]);
   useEffect(() => { contactsRef.current = contacts; }, [contacts]);
 
   // Open a conversation: load history, mark read, clear its unread badge.
@@ -54,35 +56,38 @@ export function ChatProvider({ children }) {
     const socket = getSocket();
     socketRef.current = socket;
     messageApi.contacts().then(setContacts).catch(() => {});
-    messageApi.unread().then((d) => setUnread(d.byUser || {})).catch(() => {});
+
+    // Pull the latest unread counts from the server (also re-run on every reconnect,
+    // so the red badge stays correct even if a message arrived while disconnected).
+    const refreshUnread = () =>
+      messageApi.unread().then((d) => setUnread(d.byUser || {})).catch(() => {});
+    refreshUnread();
 
     const onMessage = (msg) => {
       const myId = String(user._id);
       const senderId = String(msg.sender?._id || msg.sender);
       const otherId = senderId === myId ? String(msg.to) : senderId;
-      const current = openUserRef.current;
 
-      if (current && String(current._id) === otherId) {
-        // The conversation is open -> show the message and mark it read.
+      // Is this message part of the conversation currently open on screen?
+      const viewingThisChat =
+        widgetOpenRef.current && openUserRef.current && String(openUserRef.current._id) === otherId;
+
+      if (viewingThisChat) {
+        // Conversation is open -> append it and mark it read.
         setMessages((prev) => [...prev, msg]);
         if (senderId !== myId) messageApi.markRead(otherId).catch(() => {});
       } else if (senderId !== myId) {
-        // Incoming message from someone else -> bump the unread badge…
+        // Message arrived while the user is elsewhere -> raise the red unread badge.
         setUnread((prev) => ({ ...prev, [otherId]: (prev[otherId] || 0) + 1 }));
-        // …and pop the side window open to them if it's currently closed.
-        setWidgetOpen((isOpen) => {
-          if (!isOpen) {
-            const contact = contactsRef.current.find((c) => String(c._id) === otherId);
-            if (contact) openWith(contact);
-            return true;
-          }
-          return isOpen;
-        });
       }
     };
 
     socket.on("chat:message", onMessage);
-    return () => socket.off("chat:message", onMessage);
+    socket.on("connect", refreshUnread);
+    return () => {
+      socket.off("chat:message", onMessage);
+      socket.off("connect", refreshUnread);
+    };
   }, [user]);
 
   const send = (text) => {
