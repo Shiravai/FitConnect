@@ -1,0 +1,221 @@
+/* ============================================================
+   Cinematic login screen — snowboard / extreme-sports vibe.
+   Pure CSS3 (no Tailwind) so it fits the course tech and the
+   rest of the app. Palette: black / white / neutral grays only.
+   ============================================================ */
+
+.cine {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family: "Readex Pro", system-ui, -apple-system, sans-serif;
+  text-transform: lowercase;
+}
+
+/* ---- Background layers ---- */
+
+/* Guaranteed cinematic base (shows even with no video/image/internet). */
+.cine-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 80% at 75% 10%, rgba(255, 255, 255, 0.10), transparent 55%),
+    radial-gradient(100% 70% at 15% 90%, rgba(255, 255, 255, 0.06), transparent 50%),
+    linear-gradient(160deg, #1a1a1a 0%, #0d0d0d 45%, #050505 100%);
+  animation: cineZoom 24s ease-in-out infinite alternate;
+}
+
+/* Layered mountain silhouettes for the snowboard feel. */
+.cine-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 600' preserveAspectRatio='none'%3E%3Cpolygon fill='%23202020' points='0,600 0,360 240,180 470,380 720,150 980,400 1200,220 1440,420 1440,600'/%3E%3Cpolygon fill='%23161616' points='0,600 0,440 300,300 560,470 820,290 1080,470 1320,330 1440,470 1440,600'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: bottom;
+  opacity: 0.9;
+}
+
+/* Optional real footage — drop a file at client/public/login-bg.mp4 to use it.
+   If absent, this stays invisible and the gradient + mountains show through. */
+.cine-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Dark gradient overlay so the card and text stay readable. */
+.cine-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.7) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 30%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+/* Drifting snow particles. */
+.cine-snow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.flake {
+  position: absolute;
+  top: -10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  filter: blur(0.3px);
+  animation: cineFall linear infinite;
+}
+
+/* ---- Floating pill navbar ---- */
+.cine-nav {
+  position: absolute;
+  top: 1.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  width: min(960px, 92vw);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.cine-logo { font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; }
+.cine-nav-links { display: flex; gap: 1.6rem; }
+.cine-nav-links span {
+  font-size: 0.9rem; color: rgba(255, 255, 255, 0.65);
+  cursor: default; transition: color 0.25s ease;
+}
+.cine-nav-links span:hover { color: #fff; }
+.cine-nav-cta {
+  font-size: 0.88rem; font-weight: 600; color: #000; background: #fff;
+  padding: 0.45rem 1.2rem; border-radius: 999px; transition: transform 0.2s ease, background 0.2s ease;
+}
+.cine-nav-cta:hover { transform: translateY(-1px); background: #e5e5e5; }
+
+/* ---- Main content ---- */
+.cine-main {
+  position: relative;
+  z-index: 4;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4vw;
+  padding: 0 6vw;
+}
+
+/* Huge staggered athletic typography. */
+.cine-words { flex: 1; min-width: 0; }
+.cine-words .w {
+  display: block;
+  font-weight: 700;
+  line-height: 0.84;
+  letter-spacing: -0.04em;
+  font-size: clamp(3rem, 12vw, 12rem);
+  animation: cineRise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.cine-words .w1 { color: #fff; }
+.cine-words .w2 { margin-left: 0.14em; color: rgba(255, 255, 255, 0.78); animation-delay: 0.12s; }
+.cine-words .w3 {
+  margin-left: 0.28em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.65);
+  animation-delay: 0.24s;
+}
+
+/* ---- Glassmorphism login card ---- */
+.cine-card {
+  width: min(400px, 92vw);
+  flex-shrink: 0;
+  background: rgba(23, 23, 23, 0.8);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  padding: 2.2rem;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  animation: cineRise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
+}
+.cine-card-title { margin: 0; font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+.cine-card-sub { margin: 0.3rem 0 1.6rem; color: rgba(255, 255, 255, 0.55); font-size: 0.92rem; }
+
+.cine-field { display: block; margin-bottom: 1rem; }
+.cine-field span { display: block; font-size: 0.82rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 0.4rem; }
+.cine-field input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+.cine-field input::placeholder { color: rgba(255, 255, 255, 0.3); }
+.cine-field input:focus { outline: none; border-color: rgba(255, 255, 255, 0.55); background: rgba(255, 255, 255, 0.08); }
+
+.cine-error { color: #ff6b6b; font-size: 0.85rem; margin: 0 0 0.8rem; }
+
+.cine-btn {
+  width: 100%;
+  padding: 0.9rem;
+  margin-top: 0.4rem;
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.cine-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(255, 255, 255, 0.18); background: #ececec; }
+.cine-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.cine-secondary { text-align: center; margin: 1.2rem 0 0; font-size: 0.9rem; color: rgba(255, 255, 255, 0.55); }
+.cine-secondary a { color: #fff; font-weight: 600; transition: opacity 0.2s ease; }
+.cine-secondary a:hover { opacity: 0.7; }
+.cine-demo { text-align: center; margin: 0.9rem 0 0; font-size: 0.75rem; color: rgba(255, 255, 255, 0.3); }
+
+/* ---- Responsive ---- */
+@media (max-width: 880px) {
+  .cine-main { flex-direction: column; justify-content: center; text-align: center; padding-top: 6rem; gap: 2rem; }
+  .cine-words { flex: none; }
+  .cine-words .w { font-size: clamp(2.6rem, 17vw, 6rem); }
+  .cine-words .w2, .cine-words .w3 { margin-left: 0; }
+  .cine-nav-links { display: none; }
+  .cine-card { width: min(420px, 92vw); }
+}
+
+/* ---- Animations ---- */
+@keyframes cineZoom { from { transform: scale(1); } to { transform: scale(1.12); } }
+@keyframes cineRise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes cineFall {
+  0% { transform: translateY(-10px) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(105vh) translateX(40px); opacity: 0.2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cine-bg, .cine-words .w, .cine-card, .flake { animation: none; }
+}
