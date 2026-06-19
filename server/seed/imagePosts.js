@@ -33,4 +33,26 @@ module.exports = [
     text: "box jumps for days 📦 legs absolutely destroyed.", workout: { durationMin: 65, calories: 700 } },
   { src: "Your recent Acid styles 📷.jpg", file: "crossfit-2.jpg", sport: "CrossFit", author: "yossi", group: "CrossFit Warriors",
     text: "sandbag carries at the comp 💪 left it all on the floor.", workout: { durationMin: 70, calories: 780 } },
+
+  // --- second batch (from the "pic" folder) ---
+  { src: "images.jpg", file: "yoga-1.jpg", sport: "Yoga", author: "noa", group: null,
+    text: "acro yoga in the park 🧘 trust & balance.", workout: { durationMin: 60, calories: 250 } },
+  { src: "images (1).jpg", file: "yoga-2.jpg", sport: "Yoga", author: "maya", group: "Calm Yoga Circle",
+    text: "sunset flow by the sea 🌅 namaste.", workout: { durationMin: 55, calories: 230 } },
+
+  { src: "images (2).jpg", file: "cycling-1.jpg", sport: "Cycling", author: "yossi", group: "City Cyclists",
+    text: "trail riding in the hills 🚵 sent it!", workout: { durationMin: 90, distanceKm: 28, calories: 720 } },
+  { src: "images (3).jpg", file: "cycling-2.jpg", sport: "Cycling", author: "daniel", group: "City Cyclists",
+    text: "raising the next generation of riders 🚲", workout: { durationMin: 30, distanceKm: 5, calories: 150 } },
+  { src: "images (4).jpg", file: "cycling-3.jpg", sport: "Cycling", author: "daniel", group: "City Cyclists",
+    text: "first ride lesson in the park 🚲❤️", workout: { durationMin: 40, distanceKm: 6, calories: 180 } },
+  { src: "images (5).jpg", file: "cycling-4.jpg", sport: "Cycling", author: "yossi", group: "City Cyclists",
+    text: "early morning road kms 🚴 full gas.", workout: { durationMin: 75, distanceKm: 35, calories: 800 } },
+
+  { src: "images (6).jpg", file: "swimming-1.jpg", sport: "Swimming", author: "tamar", group: "Pool Sharks",
+    text: "butterfly sets this morning 🦋🏊 lungs on fire.", workout: { durationMin: 50, distanceKm: 2, calories: 480 } },
+  { src: "images (7).jpg", file: "swimming-2.jpg", sport: "Swimming", author: "tamar", group: "Pool Sharks",
+    text: "kickboard drills 🏊 leg day in the pool.", workout: { durationMin: 45, distanceKm: 2, calories: 380 } },
+  { src: "depositphotos_172077418-stock-photo-swimmer-in-swimming-pool.webp", file: "swimming-3.webp", sport: "Swimming", author: "maya", group: "Pool Sharks",
+    text: "lap after lap 🏊 lane life.", workout: { durationMin: 60, distanceKm: 3, calories: 520 } },
 ];
