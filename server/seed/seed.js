@@ -1,12 +1,18 @@
 // seed/seed.js — fills the database with realistic demo data (requirement #23).
 // Run with:  npm run seed
 require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
 const mongoose = require("mongoose");
 const connectDB = require("../config/db");
 const User = require("../models/User");
 const Group = require("../models/Group");
 const Post = require("../models/Post");
 const Message = require("../models/Message");
+const imagePosts = require("./imagePosts");
+
+const SEED_IMG_DIR = path.join(__dirname, "images");
+const UPLOADS_DIR = path.join(__dirname, "..", "uploads");
 
 const SPORTS = ["Running", "CrossFit", "Yoga", "Cycling", "Swimming", "Gym", "Football", "Basketball"];
 const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -148,6 +154,38 @@ async function run() {
     });
     posts.push(post);
   }
+
+  // ---- Real photo posts (matched to the sport in each image) ----
+  if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  let photoCount = 0;
+  for (const ip of imagePosts) {
+    const srcFile = path.join(SEED_IMG_DIR, ip.file);
+    if (!fs.existsSync(srcFile)) continue; // skip if the image isn't present
+    fs.copyFileSync(srcFile, path.join(UPLOADS_DIR, ip.file)); // publish to /uploads
+
+    const author = byName(ip.author);
+    const group = ip.group ? groups.find((g) => g.name === ip.group) : null;
+    const createdAt = daysAgo(randInt(0, 60));
+
+    const post = await Post.create({
+      author: author._id,
+      group: group ? group._id : null,
+      text: ip.text,
+      mediaType: "image",
+      mediaUrl: `/uploads/${ip.file}`,
+      workout: {
+        sportType: ip.sport,
+        durationMin: ip.workout?.durationMin || 0,
+        distanceKm: ip.workout?.distanceKm || 0,
+        calories: ip.workout?.calories || 0,
+      },
+      createdAt,
+      updatedAt: createdAt,
+    });
+    posts.push(post);
+    photoCount++;
+  }
+  console.log(`Added ${photoCount} real photo posts.`);
 
   // ---- Likes + comments on random posts ----
   for (const post of posts) {
