@@ -1,11 +1,10 @@
-// src/screens/SearchScreen.js — advanced search for posts AND groups (requirement #20).
-// Each search exposes 3+ parameters chosen through the UI.
+// src/screens/SearchScreen.js — simple free-text search by default,
+// with an "advanced search" button that reveals the full filters (requirement #20).
 import { useState } from "react";
 import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
 import { Field, Button } from "../components/ui";
 import PostCard from "../components/PostCard";
 import { postApi, groupApi, SPORT_TYPES } from "../api/endpoints";
-import { useAuth } from "../context/AuthContext";
 import { colors, radius } from "../theme";
 
 export default function SearchScreen({ navigation }) {
@@ -30,9 +29,10 @@ export default function SearchScreen({ navigation }) {
   );
 }
 
-// ---- Advanced post search: sportType + keyword + minDistance + date range (5 params) ----
+// ---- Posts: free-text keyword by default; advanced adds sport + minDistance + dates ----
 function PostSearch() {
-  const [q, setQ] = useState({ sportType: "", keyword: "", minDistance: "", from: "", to: "" });
+  const [q, setQ] = useState({ keyword: "", sportType: "", minDistance: "", from: "", to: "" });
+  const [advanced, setAdvanced] = useState(false);
   const [results, setResults] = useState(null);
   const [busy, setBusy] = useState(false);
   const set = (k) => (v) => setQ({ ...q, [k]: v });
@@ -40,7 +40,9 @@ function PostSearch() {
   const run = async () => {
     setBusy(true);
     try {
-      const params = Object.fromEntries(Object.entries(q).filter(([, v]) => v !== ""));
+      // When advanced is closed, only the free-text keyword is sent.
+      const active = advanced ? q : { keyword: q.keyword };
+      const params = Object.fromEntries(Object.entries(active).filter(([, v]) => v !== ""));
       setResults(await postApi.search(params));
     } catch { setResults([]); }
     finally { setBusy(false); }
@@ -48,24 +50,31 @@ function PostSearch() {
 
   return (
     <View>
-      <SportChips value={q.sportType} onChange={set("sportType")} />
-      <Field label="keyword (text contains)" value={q.keyword} onChangeText={set("keyword")} />
-      <Field label="min distance (km)" value={q.minDistance} onChangeText={set("minDistance")} keyboardType="numeric" />
-      <View style={{ flexDirection: "row", gap: 8 }}>
-        <View style={{ flex: 1 }}><Field label="from (yyyy-mm-dd)" value={q.from} onChangeText={set("from")} /></View>
-        <View style={{ flex: 1 }}><Field label="to (yyyy-mm-dd)" value={q.to} onChangeText={set("to")} /></View>
-      </View>
-      <Button title={busy ? "searching…" : "search posts"} onPress={run} disabled={busy} />
+      <Field label="search posts" value={q.keyword} onChangeText={set("keyword")} placeholder="type anything…" />
 
+      <AdvancedToggle open={advanced} onPress={() => setAdvanced(!advanced)} />
+      {advanced && (
+        <View style={styles.advanced}>
+          <SportChips value={q.sportType} onChange={set("sportType")} />
+          <Field label="min distance (km)" value={q.minDistance} onChangeText={set("minDistance")} keyboardType="numeric" />
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flex: 1 }}><Field label="from (yyyy-mm-dd)" value={q.from} onChangeText={set("from")} /></View>
+            <View style={{ flex: 1 }}><Field label="to (yyyy-mm-dd)" value={q.to} onChangeText={set("to")} /></View>
+          </View>
+        </View>
+      )}
+
+      <Button title={busy ? "searching…" : "search"} onPress={run} disabled={busy} />
       {results && <Text style={styles.count}>{results.length} result(s)</Text>}
       {results && results.map((p) => <PostCard key={p._id} post={p} onDeleted={() => run()} />)}
     </View>
   );
 }
 
-// ---- Advanced group search: sportType + name + privacy + minMembers (4 params) ----
+// ---- Groups: free-text name by default; advanced adds sport + privacy + minMembers ----
 function GroupSearch({ navigation }) {
-  const [q, setQ] = useState({ sportType: "", name: "", privacy: "", minMembers: "" });
+  const [q, setQ] = useState({ name: "", sportType: "", privacy: "", minMembers: "" });
+  const [advanced, setAdvanced] = useState(false);
   const [results, setResults] = useState(null);
   const [busy, setBusy] = useState(false);
   const set = (k) => (v) => setQ({ ...q, [k]: v });
@@ -73,7 +82,8 @@ function GroupSearch({ navigation }) {
   const run = async () => {
     setBusy(true);
     try {
-      const params = Object.fromEntries(Object.entries(q).filter(([, v]) => v !== ""));
+      const active = advanced ? q : { name: q.name };
+      const params = Object.fromEntries(Object.entries(active).filter(([, v]) => v !== ""));
       setResults(await groupApi.search(params));
     } catch { setResults([]); }
     finally { setBusy(false); }
@@ -81,19 +91,25 @@ function GroupSearch({ navigation }) {
 
   return (
     <View>
-      <SportChips value={q.sportType} onChange={set("sportType")} />
-      <Field label="name" value={q.name} onChangeText={set("name")} />
-      <Text style={styles.label}>privacy</Text>
-      <View style={{ flexDirection: "row", gap: 8, marginBottom: 12 }}>
-        {["", "public", "private"].map((p) => (
-          <Pressable key={p || "any"} onPress={() => set("privacy")(p)} style={[styles.chip, q.privacy === p && styles.chipOn]}>
-            <Text style={[styles.chipText, q.privacy === p && { color: "#fff" }]}>{p || "any"}</Text>
-          </Pressable>
-        ))}
-      </View>
-      <Field label="min members" value={q.minMembers} onChangeText={set("minMembers")} keyboardType="numeric" />
-      <Button title={busy ? "searching…" : "search groups"} onPress={run} disabled={busy} />
+      <Field label="search groups" value={q.name} onChangeText={set("name")} placeholder="type a group name…" />
 
+      <AdvancedToggle open={advanced} onPress={() => setAdvanced(!advanced)} />
+      {advanced && (
+        <View style={styles.advanced}>
+          <SportChips value={q.sportType} onChange={set("sportType")} />
+          <Text style={styles.label}>privacy</Text>
+          <View style={{ flexDirection: "row", gap: 8, marginBottom: 12 }}>
+            {["", "public", "private"].map((p) => (
+              <Pressable key={p || "any"} onPress={() => set("privacy")(p)} style={[styles.chip, q.privacy === p && styles.chipOn]}>
+                <Text style={[styles.chipText, q.privacy === p && { color: "#fff" }]}>{p || "any"}</Text>
+              </Pressable>
+            ))}
+          </View>
+          <Field label="min members" value={q.minMembers} onChangeText={set("minMembers")} keyboardType="numeric" />
+        </View>
+      )}
+
+      <Button title={busy ? "searching…" : "search"} onPress={run} disabled={busy} />
       {results && <Text style={styles.count}>{results.length} result(s)</Text>}
       {results && results.map((g) => (
         <Pressable key={g._id} style={styles.groupCard} onPress={() => navigation.navigate("GroupDetail", { id: g._id })}>
@@ -103,6 +119,14 @@ function GroupSearch({ navigation }) {
         </Pressable>
       ))}
     </View>
+  );
+}
+
+function AdvancedToggle({ open, onPress }) {
+  return (
+    <Pressable onPress={onPress} style={styles.advBtn}>
+      <Text style={styles.advText}>{open ? "▴ hide advanced search" : "🎛️ advanced search"}</Text>
+    </Pressable>
   );
 }
 
@@ -130,6 +154,9 @@ const styles = StyleSheet.create({
   toggleBtn: { flex: 1, paddingVertical: 10, borderRadius: radius.pill, alignItems: "center" },
   toggleOn: { backgroundColor: colors.primary },
   toggleText: { color: colors.muted, fontWeight: "700" },
+  advBtn: { paddingVertical: 8, marginBottom: 10 },
+  advText: { color: colors.primary, fontWeight: "700" },
+  advanced: { borderLeftWidth: 2, borderLeftColor: colors.border, paddingLeft: 12, marginBottom: 6 },
   label: { color: colors.muted, fontSize: 13, marginBottom: 6, fontWeight: "600" },
   chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: radius.pill, backgroundColor: "rgba(255,255,255,0.06)", marginRight: 8 },
   chipOn: { backgroundColor: colors.primary },
