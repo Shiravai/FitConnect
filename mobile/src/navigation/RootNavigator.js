@@ -19,6 +19,7 @@ import ChatListScreen from "../screens/ChatListScreen";
 import ChatRoomScreen from "../screens/ChatRoomScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import AdminScreen from "../screens/AdminScreen";
+import SearchScreen from "../screens/SearchScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -71,6 +72,7 @@ export default function RootNavigator() {
           <Stack.Screen name="ChatRoom" component={ChatRoomScreen} options={({ route }) => ({ title: route.params?.name || "chat" })} />
           <Stack.Screen name="UserProfile" component={ProfileScreen} options={{ title: "profile" }} />
           <Stack.Screen name="Admin" component={AdminScreen} options={{ title: "admin panel" }} />
+          <Stack.Screen name="Search" component={SearchScreen} options={{ title: "search" }} />
         </>
       ) : (
         <>

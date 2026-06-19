@@ -34,7 +34,10 @@ export default function FeedScreen({ navigation }) {
     <SafeAreaView style={styles.root} edges={["top"]}>
       <View style={styles.header}>
         <Text style={styles.brand}>fit<Text style={{ color: colors.primary }}>connect</Text></Text>
-        <Pressable onPress={logout}><Text style={styles.logout}>logout</Text></Pressable>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+          <Pressable onPress={() => navigation.navigate("Search")}><Text style={styles.searchBtn}>🔍 search</Text></Pressable>
+          <Pressable onPress={logout}><Text style={styles.logout}>logout</Text></Pressable>
+        </View>
       </View>
 
       <FlatList
@@ -61,6 +64,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 16, paddingVertical: 10 },
   brand: { color: "#fff", fontSize: 22, fontWeight: "800" },
   logout: { color: colors.muted, fontWeight: "600" },
+  searchBtn: { color: colors.text, fontWeight: "600" },
   title: { color: colors.text, fontSize: 20, fontWeight: "700", marginBottom: 12 },
   empty: { color: colors.muted, textAlign: "center", marginTop: 40, paddingHorizontal: 20, lineHeight: 20 },
 });

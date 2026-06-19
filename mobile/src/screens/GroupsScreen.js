@@ -32,7 +32,10 @@ export default function GroupsScreen({ navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
       <View style={styles.header}>
         <Text style={styles.title}>groups</Text>
-        <Button small title={showForm ? "cancel" : "+ create"} onPress={() => setShowForm(!showForm)} />
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          <Button small variant="ghost" title="🔍 search" onPress={() => navigation.navigate("Search")} />
+          <Button small title={showForm ? "cancel" : "+ create"} onPress={() => setShowForm(!showForm)} />
+        </View>
       </View>
 
       {showForm && (
