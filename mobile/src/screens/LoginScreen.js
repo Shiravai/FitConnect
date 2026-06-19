@@ -1,7 +1,7 @@
 // src/screens/LoginScreen.js — cinematic login with a looping snowboard video background.
 import { useState } from "react";
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, Pressable } from "react-native";
-import { Video, ResizeMode } from "expo-av";
+import { useVideoPlayer, VideoView } from "expo-video";
 import { Field, Button } from "../components/ui";
 import { useAuth } from "../context/AuthContext";
 import { colors } from "../theme";
@@ -15,6 +15,13 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // Looping muted background video (snowboarder).
+  const player = useVideoPlayer(SNOW_VIDEO, (p) => {
+    p.loop = true;
+    p.muted = true;
+    p.play();
+  });
 
   const submit = async () => {
     setError("");
@@ -31,14 +38,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.root}>
-      <Video
-        source={{ uri: SNOW_VIDEO }}
-        style={StyleSheet.absoluteFill}
-        resizeMode={ResizeMode.COVER}
-        shouldPlay
-        isLooping
-        isMuted
-      />
+      <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} />
       <View style={styles.overlay} />
 
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.content}>

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { View, Text, Image, TextInput, Pressable, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Video, ResizeMode } from "expo-av";
+import { useVideoPlayer, VideoView } from "expo-video";
 import Avatar from "./Avatar";
 import { postApi } from "../api/endpoints";
 import { mediaUrl } from "../api/client";
@@ -73,13 +73,7 @@ export default function PostCard({ post, onChanged, onDeleted }) {
       {!!post.text && <Text style={styles.text}>{post.text}</Text>}
 
       {post.mediaType === "video" && post.mediaUrl ? (
-        <Video
-          source={{ uri: mediaUrl(post.mediaUrl) }}
-          style={styles.media}
-          useNativeControls
-          resizeMode={ResizeMode.CONTAIN}
-          isLooping
-        />
+        <PostVideo uri={mediaUrl(post.mediaUrl)} />
       ) : null}
       {(post.mediaType === "image" || post.mediaType === "drawing") && post.mediaUrl ? (
         <Image source={{ uri: mediaUrl(post.mediaUrl) }} style={styles.media} resizeMode="cover" />
@@ -124,6 +118,12 @@ export default function PostCard({ post, onChanged, onDeleted }) {
 
 function Chip({ children }) {
   return <View style={styles.chip}><Text style={styles.chipText}>{children}</Text></View>;
+}
+
+// Video post player (expo-video). Rendered only for video posts so the hook is safe.
+function PostVideo({ uri }) {
+  const player = useVideoPlayer(uri, (p) => { p.loop = true; });
+  return <VideoView player={player} style={styles.media} contentFit="contain" nativeControls />;
 }
 
 const styles = StyleSheet.create({

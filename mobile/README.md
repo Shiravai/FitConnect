@@ -62,7 +62,7 @@ mobile/
 | נושא | בגרסת הווב | באפליקציה |
 |------|-----------|-----------|
 | רכיבי UI | HTML/CSS | רכיבי React Native (`View`, `Text`, `Image`) + `StyleSheet` |
-| וידאו | `<video>` | **expo-av** |
+| וידאו | `<video>` | **expo-video** (SDK 54) |
 | העלאת תמונות | input file | **expo-image-picker** |
 | גרפים | D3 + DOM | **react-native-svg + d3-scale/d3-shape** |
 | צ'אט בזמן אמת | Socket.io | **socket.io-client** (זהה) |

@@ -4,7 +4,7 @@ import { View, Text, ScrollView, Image, Pressable, StyleSheet, Alert } from "rea
 import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
-import { Video, ResizeMode } from "expo-av";
+import { useVideoPlayer, VideoView } from "expo-video";
 import { Field, Button } from "../components/ui";
 import { postApi, groupApi, SPORT_TYPES } from "../api/endpoints";
 import { uploadAsset, mediaUrl } from "../api/client";
@@ -98,7 +98,7 @@ export default function CreatePostScreen({ navigation }) {
         {!!mediaUrlState && (
           <View style={{ marginVertical: 10 }}>
             {mediaType === "video" ? (
-              <Video source={{ uri: mediaUrl(mediaUrlState) }} style={styles.preview} useNativeControls resizeMode={ResizeMode.CONTAIN} />
+              <PreviewVideo uri={mediaUrl(mediaUrlState)} />
             ) : (
               <Image source={{ uri: mediaUrl(mediaUrlState) }} style={styles.preview} />
             )}
@@ -123,6 +123,11 @@ export default function CreatePostScreen({ navigation }) {
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+function PreviewVideo({ uri }) {
+  const player = useVideoPlayer(uri, (p) => { p.loop = true; });
+  return <VideoView player={player} style={styles.preview} contentFit="contain" nativeControls />;
 }
 
 function Selectable({ label, active, onPress }) {

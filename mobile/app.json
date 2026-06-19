@@ -26,7 +26,8 @@
           "photosPermission": "FitConnect needs access to your photos to share workout posts."
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      "expo-video"
     ]
   }
 }
