@@ -156,12 +156,12 @@ async function run() {
   }
 
   // ---- Real photo posts (matched to the sport in each image) ----
-  if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  // The images live in seed/images (committed to git) and are served by the server at
+  // /seed-images, so they display for ANY host — no copy step or per-machine seeding needed.
   let photoCount = 0;
   for (const ip of imagePosts) {
     const srcFile = path.join(SEED_IMG_DIR, ip.file);
     if (!fs.existsSync(srcFile)) continue; // skip if the image isn't present
-    fs.copyFileSync(srcFile, path.join(UPLOADS_DIR, ip.file)); // publish to /uploads
 
     const author = byName(ip.author);
     const group = ip.group ? groups.find((g) => g.name === ip.group) : null;
@@ -172,7 +172,7 @@ async function run() {
       group: group ? group._id : null,
       text: ip.text,
       mediaType: "image",
-      mediaUrl: `/uploads/${ip.file}`,
+      mediaUrl: `/seed-images/${ip.file}`,
       workout: {
         sportType: ip.sport,
         durationMin: ip.workout?.durationMin || 0,

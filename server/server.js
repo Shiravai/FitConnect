@@ -31,6 +31,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded images/videos statically at /uploads/<file>
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// Serve the committed demo photos (in git) so seeded image posts work on ANY host,
+// with no need to run the seed-copy step first.
+app.use("/seed-images", express.static(path.join(__dirname, "seed", "images")));
 
 // Simple health check
 app.get("/api/health", (req, res) => res.json({ status: "ok", app: "FitConnect" }));
