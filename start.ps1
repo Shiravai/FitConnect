@@ -18,13 +18,10 @@ if ($serverOutput -match "Server running") {
 # 2. Start Cloudflare tunnel for backend (free, no signup)
 Write-Host "`n[2/3] Starting Cloudflare tunnel for backend..." -ForegroundColor Yellow
 $tunnelLog = "$env:TEMP\fc_tunnel.log"
-if (Test-Path $tunnelLog) { Remove-Item $tunnelLog -Force }
+try { if (Test-Path $tunnelLog) { Remove-Item $tunnelLog -Force -ErrorAction Stop } } catch { $tunnelLog = "$env:TEMP\fc_tunnel_$(Get-Date -Format 'HHmmss').log" }
 
-$npxPath = (Get-Command npx.cmd -ErrorAction SilentlyContinue).Source
-if (-not $npxPath) { $npxPath = (Get-Command npx -ErrorAction SilentlyContinue).Source }
-
-$tunnelProc = Start-Process -FilePath $npxPath -ArgumentList "cloudflared tunnel --url http://localhost:5000" `
-    -RedirectStandardError $tunnelLog -WindowStyle Hidden -PassThru
+$tunnelProc = Start-Process -FilePath "cmd.exe" -ArgumentList "/c npx cloudflared tunnel --url http://localhost:5000 2>$tunnelLog" `
+    -WindowStyle Hidden -PassThru
 
 # Wait for tunnel URL
 $apiUrl = $null
